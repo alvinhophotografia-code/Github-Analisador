@@ -35,7 +35,7 @@
               <label for="generated-spins" class="block text-xs font-medium text-muted-foreground mb-1">Número de Jogadas</label>
               <input type="number" id="generated-spins"
                      [ngModel]="generatedSpins()"
-                     (ngModelChange)="generatedSpins.set(Number($event))"
+                     (ngModelChange)="generatedSpins.set(+$event)"
                      min="100" max="100000" step="100"
                      class="w-full bg-input border-transparent rounded-md px-3 py-2 text-sm focus:ring-1 focus:ring-ring focus:outline-none">
             </div>
@@ -50,7 +50,7 @@
               <label for="initial-bankroll" class="block text-xs font-medium text-muted-foreground mb-1">Banca Inicial</label>
               <input type="number" id="initial-bankroll"
                      [ngModel]="initialBankroll()"
-                     (ngModelChange)="initialBankroll.set(Number($event))"
+                     (ngModelChange)="initialBankroll.set(+$event)"
                      min="1"
                      class="w-full bg-input border-transparent rounded-md px-3 py-2 text-sm focus:ring-1 focus:ring-ring focus:outline-none">
             </div>
@@ -58,7 +58,7 @@
               <label for="base-bet" class="block text-xs font-medium text-muted-foreground mb-1">Aposta Base</label>
               <input type="number" id="base-bet"
                      [ngModel]="baseBet()"
-                     (ngModelChange)="baseBet.set(Number($event))"
+                     (ngModelChange)="baseBet.set(+$event)"
                      min="1"
                      class="w-full bg-input border-transparent rounded-md px-3 py-2 text-sm focus:ring-1 focus:ring-ring focus:outline-none">
             </div>
@@ -66,7 +66,7 @@
               <label for="stop-loss" class="block text-xs font-medium text-muted-foreground mb-1">Stop-Loss</label>
               <input type="number" id="stop-loss"
                      [ngModel]="stopLoss()"
-                     (ngModelChange)="stopLoss.set(Number($event))"
+                     (ngModelChange)="stopLoss.set(+$event)"
                      min="0" placeholder="0 para desativar"
                      class="w-full bg-input border-transparent rounded-md px-3 py-2 text-sm focus:ring-1 focus:ring-ring focus:outline-none">
             </div>
@@ -74,7 +74,7 @@
               <label for="take-profit" class="block text-xs font-medium text-muted-foreground mb-1">Take-Profit</label>
               <input type="number" id="take-profit"
                      [ngModel]="takeProfit()"
-                     (ngModelChange)="takeProfit.set(Number($event))"
+                     (ngModelChange)="takeProfit.set(+$event)"
                      min="0" placeholder="0 para desativar"
                      class="w-full bg-input border-transparent rounded-md px-3 py-2 text-sm focus:ring-1 focus:ring-ring focus:outline-none">
             </div>
