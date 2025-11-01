@@ -1,0 +1,86 @@
+
+<div class="glass-card p-4">
+  <div class="flex justify-between items-center mb-3">
+    <h3 class="text-lg font-semibold text-primary">{{ title() }}</h3>
+    <button (click)="toggleCardMinimized()" class="p-1 text-muted-foreground hover:text-foreground">
+        @if(!isCardMinimized()) {
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+        } @else {
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+        }
+    </button>
+  </div>
+
+  @if(!isCardMinimized()) {
+    <div class="animate-slide-in">
+    @if (filteredStrategies().length > 0) {
+        <div class="space-y-3">
+        @for(strategy of filteredStrategies(); track strategy.id) {
+            <div class="bg-secondary/50 p-3 rounded-md" [class.opacity-50]="!strategy.active">
+            <div class="flex justify-between items-start">
+                <div class="flex-1 overflow-hidden">
+                    <div class="flex items-center gap-2">
+                        <h4 class="font-semibold text-primary-foreground truncate">{{ strategy.name }}</h4>
+                        @if(strategy.isPriority) {
+                        <span class="text-destructive font-bold text-xs bg-destructive/20 px-2 py-0.5 rounded-full">PRIORIDADE</span>
+                        }
+                    </div>
+                </div>
+                <button (click)="toggleMinimized(strategy.id)" class="p-1 -mr-1 text-muted-foreground hover:text-foreground">
+                    @if(!minimizedStates()[strategy.id]) {
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+                    } @else {
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                    }
+                </button>
+            </div>
+
+            @if(!minimizedStates()[strategy.id]) {
+                <div class="mt-2 animate-slide-in">
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-sm">
+                        <div class="bg-muted p-2 rounded">
+                        <p class="text-xs text-muted-foreground">Taxa de Acerto</p>
+                        <p class="font-bold font-mono text-primary">{{ hitRate(strategy) }}</p>
+                        </div>
+                        <div class="bg-muted p-2 rounded">
+                        <p class="text-xs text-muted-foreground">Atual</p>
+                        <p class="font-bold font-mono" [class]="strategy.currentStreak > 0 ? 'text-green-500' : (strategy.currentStreak < 0 ? 'text-red-500' : '')">
+                            {{ strategy.currentStreak > 0 ? '+' : '' }}{{ strategy.currentStreak }}
+                        </p>
+                        </div>
+                        <div class="bg-muted p-2 rounded">
+                        <p class="text-xs text-muted-foreground">Maior Seq. Vitória</p>
+                        <p class="font-bold font-mono text-green-500">{{ strategy.longestWinStreak }}</p>
+                        </div>
+                        <div class="bg-muted p-2 rounded">
+                        <p class="text-xs text-muted-foreground">Maior Seq. Derrota</p>
+                        <p class="font-bold font-mono text-red-500">{{ strategy.longestLossStreak }}</p>
+                        </div>
+                    </div>
+                </div>
+            } @else {
+                <div class="h-8 flex items-center mt-1">
+                @if(strategy.history.length > 1) {
+                    <svg class="w-full h-full" viewBox="0 0 100 20" preserveAspectRatio="none">
+                        <path [attr.d]="generateSparklinePath(strategy)" fill="none" stroke="hsl(var(--primary))" stroke-width="1.5" />
+                    </svg>
+                } @else {
+                    <p class="text-xs text-muted-foreground w-full text-center">Poucos dados para o gráfico.</p>
+                }
+                </div>
+            }
+            </div>
+        }
+        </div>
+    } @else {
+        @if(filter() === 'priority') {
+        <p class="text-muted-foreground text-sm text-center py-4">Nenhuma estratégia prioritária ativa.</p>
+        } @else if (filter() === 'active') {
+        <p class="text-muted-foreground text-sm text-center py-4">Nenhuma estratégia ativa.</p>
+        } @else {
+        <p class="text-muted-foreground text-sm text-center py-4">Nenhuma estratégia definida para analisar sequências.</p>
+        }
+    }
+    </div>
+  }
+</div>

@@ -1,0 +1,39 @@
+<div class="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 animate-slide-in">
+  <div class="glass-card relative max-w-md w-full p-6 rounded-lg border border-primary/50 neon-glow">
+    <button (click)="finish()" class="absolute top-4 right-4 text-muted-foreground hover:text-foreground transition-colors" aria-label="Fechar tutorial">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </button>
+
+    @let step = steps[currentStep()];
+    
+    <h2 class="text-2xl font-bold text-primary mb-4">{{ step.title }}</h2>
+    
+    <div class="prose prose-invert max-w-none mb-6">
+      <p>{{ step.content }}</p>
+    </div>
+    
+    <div class="flex justify-between items-center">
+      <div>
+        <span class="text-sm text-muted-foreground">{{ currentStep() + 1 }} / {{ steps.length }}</span>
+      </div>
+      
+      <div class="flex gap-2">
+        @if (currentStep() > 0) {
+          <button (click)="prevStep()" class="bg-secondary text-secondary-foreground px-4 py-2 rounded-md hover:bg-secondary/80 font-semibold">
+            Anterior
+          </button>
+        }
+        
+        @if (currentStep() < steps.length - 1) {
+          <button (click)="nextStep()" class="bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90 font-semibold">
+            Próximo
+          </button>
+        } @else {
+          <button (click)="finish()" class="bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90 font-semibold">
+            Finalizar
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+</div>

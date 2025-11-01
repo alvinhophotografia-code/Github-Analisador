@@ -1,0 +1,59 @@
+
+<div class="glass-card p-4">
+  <div class="flex justify-between items-center mb-3">
+    <h3 class="text-lg font-semibold text-primary">Correlação de Números</h3>
+    <button (click)="toggleMinimized()" class="p-1 text-muted-foreground hover:text-foreground">
+      @if(!isMinimized()) {
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+      } @else {
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+      }
+    </button>
+  </div>
+  
+  @if(!isMinimized()) {
+    <div class="animate-slide-in">
+      <div>
+        <p class="text-sm text-muted-foreground mb-2">Selecione um número para ver quais números o seguiram com mais frequência:</p>
+        <div class="grid grid-cols-10 gap-1">
+          @for(num of allNumbers; track num) {
+            <button 
+                (click)="selectNumber(num)"
+                [class]="'h-8 w-8 text-xs flex items-center justify-center rounded font-mono border-2 ' + numberColorClass(num) + (selectedNumber() === num ? ' border-primary' : ' border-transparent opacity-60 hover:opacity-100')">
+                {{ num }}
+            </button>
+          }
+        </div>
+      </div>
+
+      <div class="mt-4 min-h-[100px]">
+        @if (selectedNumber() !== null) {
+          @let corrs = correlations();
+          <h4 class="font-medium mb-2">Top 5 Seguintes de <span [class]="'px-1.5 py-0.5 text-xs rounded text-white ' + numberColorClass(selectedNumber()!)">{{ selectedNumber() }}</span>:</h4>
+          @if (corrs.length > 0) {
+            <div class="space-y-2">
+              @for(corr of corrs; track corr.number) {
+                <div class="flex items-center gap-2 text-sm">
+                  <div [class]="'h-6 w-6 flex-shrink-0 flex items-center justify-center rounded-full text-xs font-bold text-white ' + numberColorClass(corr.number)">
+                    {{ corr.number }}
+                  </div>
+                  <div class="w-full bg-secondary/50 rounded-full h-4">
+                    <div class="bg-primary h-4 rounded-full text-right" [style.width]="corr.percentage + '%'">
+                    </div>
+                  </div>
+                  <div class="font-mono text-xs w-24 text-right">
+                    {{ corr.count }}x ({{ corr.percentage.toFixed(1) }}%)
+                  </div>
+                </div>
+              }
+            </div>
+          } @else {
+            <p class="text-muted-foreground text-sm text-center py-4">Sem dados para o número {{ selectedNumber() }}. Ele ainda não apareceu ou é sempre o último número.</p>
+          }
+        } @else {
+          <p class="text-muted-foreground text-sm text-center py-4">Selecione um número acima para começar.</p>
+        }
+      </div>
+    </div>
+  }
+</div>

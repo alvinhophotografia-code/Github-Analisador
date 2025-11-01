@@ -1,0 +1,112 @@
+
+<div class="p-2 w-full max-w-lg mx-auto">
+  <div class="grid grid-cols-[1fr_1fr_1fr_repeat(3,1.5fr)] grid-rows-[auto_repeat(12,minmax(0,1fr))_auto] gap-1 font-mono text-white text-xs sm:text-sm">
+    <!-- Row 1: Zeros -->
+    <div [class]="'h-10 flex items-center justify-center rounded-md relative ' + (rouletteType() === 'american' ? 'col-span-3' : 'col-span-6')" [style]="getHeatmapStyle(0)">
+      <span class="font-bold sm:text-base">0</span>
+      @if (lastNumber() === 0) {
+        <div class="absolute inset-0 rounded-md ring-4 ring-offset-2 ring-offset-card ring-primary neon-glow-strong"></div>
+      }
+    </div>
+    @if(rouletteType() === 'american') {
+      <div class="col-span-3 h-10 flex items-center justify-center rounded-md relative" [style]="getHeatmapStyle(37)">
+        <span class="font-bold sm:text-base">00</span>
+        @if (lastNumber() === 37) {
+          <div class="absolute inset-0 rounded-md ring-4 ring-offset-2 ring-offset-card ring-primary neon-glow-strong"></div>
+        }
+      </div>
+    }
+
+    <!-- Column 1 Bets: Range -->
+    <div class="col-start-1 row-start-2 row-span-6 bg-black/50 rounded-md flex items-center justify-center p-1 relative">
+      <span class="transform -rotate-90 whitespace-nowrap">1-18</span>
+      @if(lastNumberProperties()?.range === 'low') {
+        <div class="absolute inset-0 rounded-md ring-4 ring-offset-2 ring-offset-card ring-primary neon-glow-strong"></div>
+      }
+    </div>
+    <div class="col-start-1 row-start-8 row-span-6 bg-black/50 rounded-md flex items-center justify-center p-1 relative">
+      <span class="transform -rotate-90 whitespace-nowrap">19-36</span>
+      @if(lastNumberProperties()?.range === 'high') {
+        <div class="absolute inset-0 rounded-md ring-4 ring-offset-2 ring-offset-card ring-primary neon-glow-strong"></div>
+      }
+    </div>
+
+    <!-- Column 2 Bets: Parity & Color -->
+    <div class="col-start-2 row-start-2 row-span-3 bg-black/50 rounded-md flex items-center justify-center relative">
+      <span>PAR</span>
+       @if(lastNumberProperties()?.parity === 'even') {
+        <div class="absolute inset-0 rounded-md ring-4 ring-offset-2 ring-offset-card ring-primary neon-glow-strong"></div>
+      }
+    </div>
+    <div class="col-start-2 row-start-5 row-span-3 roulette-number-red rounded-md flex items-center justify-center relative">
+      <div class="w-4 h-4 sm:w-5 sm:h-5 bg-transparent border-2 border-white transform rotate-45"></div>
+       @if(lastNumberProperties()?.color === 'red') {
+        <div class="absolute inset-0 rounded-md ring-4 ring-offset-2 ring-offset-card ring-primary neon-glow-strong"></div>
+      }
+    </div>
+    <div class="col-start-2 row-start-8 row-span-3 roulette-number-black rounded-md flex items-center justify-center relative">
+      <div class="w-4 h-4 sm:w-5 sm:h-5 bg-white transform rotate-45"></div>
+       @if(lastNumberProperties()?.color === 'black') {
+        <div class="absolute inset-0 rounded-md ring-4 ring-offset-2 ring-offset-card ring-primary neon-glow-strong"></div>
+      }
+    </div>
+    <div class="col-start-2 row-start-11 row-span-3 bg-black/50 rounded-md flex items-center justify-center relative">
+      <span>ÍMPAR</span>
+       @if(lastNumberProperties()?.parity === 'odd') {
+        <div class="absolute inset-0 rounded-md ring-4 ring-offset-2 ring-offset-card ring-primary neon-glow-strong"></div>
+      }
+    </div>
+
+    <!-- Column 3 Bets: Dozens -->
+    <div class="col-start-3 row-start-2 row-span-4 bg-black/50 rounded-md flex items-center justify-center p-1 relative">
+      <span class="transform -rotate-90 whitespace-nowrap">1ª 12</span>
+       @if(lastNumberProperties()?.dozen === 'first') {
+        <div class="absolute inset-0 rounded-md ring-4 ring-offset-2 ring-offset-card ring-primary neon-glow-strong"></div>
+      }
+    </div>
+    <div class="col-start-3 row-start-6 row-span-4 bg-black/50 rounded-md flex items-center justify-center p-1 relative">
+      <span class="transform -rotate-90 whitespace-nowrap">2ª 12</span>
+       @if(lastNumberProperties()?.dozen === 'second') {
+        <div class="absolute inset-0 rounded-md ring-4 ring-offset-2 ring-offset-card ring-primary neon-glow-strong"></div>
+      }
+    </div>
+    <div class="col-start-3 row-start-10 row-span-4 bg-black/50 rounded-md flex items-center justify-center p-1 relative">
+      <span class="transform -rotate-90 whitespace-nowrap">3ª 12</span>
+       @if(lastNumberProperties()?.dozen === 'third') {
+        <div class="absolute inset-0 rounded-md ring-4 ring-offset-2 ring-offset-card ring-primary neon-glow-strong"></div>
+      }
+    </div>
+
+    <!-- Main Numbers Sub-Grid -->
+    <div class="col-start-4 col-span-3 row-start-2 row-span-12 grid grid-cols-3 gap-1">
+      @for (num of gridNumbers; track num) {
+        <div class="aspect-square flex items-center justify-center rounded-md relative" [style]="getHeatmapStyle(num)">
+          <span class="font-bold text-sm sm:text-base">{{ num }}</span>
+          @if (lastNumber() === num) {
+            <div class="absolute inset-0 rounded-md ring-4 ring-offset-2 ring-offset-card ring-primary neon-glow-strong"></div>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Row 14: Column Bets -->
+    <div class="col-start-4 row-start-14 bg-black/50 h-10 flex items-center justify-center rounded-md relative">
+      2:1
+       @if(lastNumberProperties()?.column === 'first') {
+        <div class="absolute inset-0 rounded-md ring-4 ring-offset-2 ring-offset-card ring-primary neon-glow-strong"></div>
+      }
+    </div>
+    <div class="col-start-5 row-start-14 bg-black/50 h-10 flex items-center justify-center rounded-md relative">
+      2:1
+       @if(lastNumberProperties()?.column === 'second') {
+        <div class="absolute inset-0 rounded-md ring-4 ring-offset-2 ring-offset-card ring-primary neon-glow-strong"></div>
+      }
+    </div>
+    <div class="col-start-6 row-start-14 bg-black/50 h-10 flex items-center justify-center rounded-md relative">
+      2:1
+       @if(lastNumberProperties()?.column === 'third') {
+        <div class="absolute inset-0 rounded-md ring-4 ring-offset-2 ring-offset-card ring-primary neon-glow-strong"></div>
+      }
+    </div>
+  </div>
+</div>

@@ -1,0 +1,268 @@
+
+<div class="glass-card p-6">
+  <h2 class="text-xl font-semibold mb-4 text-primary">{{ isEditing() ? 'Editar Estratégia' : 'Criar Sequência de Estratégia' }}</h2>
+  
+  <div class.bind="space-y-4 mb-4">
+    <!-- AI Suggestion -->
+    <div class="space-y-2 p-3 bg-secondary/30 rounded-md">
+       <label for="ai-prompt" class="text-sm font-medium text-primary">🤖 Sugestão da IA</label>
+       <div class="flex gap-2">
+         <input 
+            id="ai-prompt" 
+            type="text"
+            [ngModel]="aiPrompt()"
+            (ngModelChange)="aiPrompt.set($event)"
+            placeholder="ex: 'seguir a última cor'"
+            class="flex-1 bg-input border-transparent rounded-md px-3 py-2 text-sm focus:ring-1 focus:ring-ring focus:outline-none">
+          <button (click)="getAiSuggestion()" [disabled]="isSuggesting()" class="bg-secondary text-secondary-foreground px-4 py-2 rounded-md hover:bg-secondary/80 text-sm font-semibold disabled:opacity-50 disabled:cursor-wait">
+            @if(isSuggesting()) {
+              <svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+            } @else {
+              <span>Perguntar à IA</span>
+            }
+          </button>
+       </div>
+    </div>
+    
+    <!-- Current Sequence -->
+    <div>
+      <h3 class="text-sm font-medium text-muted-foreground mb-2">Sequência Atual</h3>
+      @if(sequence().length > 0) {
+        <div class="flex flex-wrap gap-2 items-center p-2 bg-secondary/50 rounded-md">
+           @for(step of sequence(); track step; let i = $index) {
+             <div class="flex items-center gap-2 bg-muted p-1.5 rounded text-sm">
+                <span>{{ getStrategyValueLabel(step) }}</span>
+                <button (click)="removeStep(i)" class="text-muted-foreground hover:text-destructive">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+             </div>
+             @if (i < sequence().length - 1) {
+              <span class="text-primary font-bold">→</span>
+             }
+           }
+        </div>
+      } @else {
+        <div class="text-center p-3 bg-secondary/50 rounded-md">
+          <p class="text-sm text-muted-foreground">Clique abaixo ou use a IA para adicionar o primeiro passo.</p>
+        </div>
+      }
+    </div>
+
+    <div>
+      <label for="strategy-name" class="text-sm font-medium">Nome da Estratégia (Opcional)</label>
+      <input 
+          id="strategy-name" 
+          type="text"
+          [ngModel]="strategyName()"
+          (ngModelChange)="strategyName.set($event)"
+          placeholder="ex: 'Vermelho para Par'"
+          class="w-full bg-input border-transparent rounded-md px-3 py-2 text-sm focus:ring-1 focus:ring-ring focus:outline-none">
+    </div>
+  </div>
+
+  <!-- Mode Switcher -->
+  <div class="flex justify-center bg-secondary/30 p-1 rounded-md mb-4">
+      <button (click)="setCreatorMode('simple')" [class]="'w-1/2 py-1 text-sm font-semibold rounded ' + (creatorMode() === 'simple' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground')">Simples</button>
+      <button (click)="setCreatorMode('advanced')" [class]="'w-1/2 py-1 text-sm font-semibold rounded ' + (creatorMode() === 'advanced' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground')">Avançado</button>
+  </div>
+
+  <div class="border-b border-border/50 mb-4">
+    <nav class="-mb-px flex space-x-4 overflow-x-auto" aria-label="Tabs">
+      @for (tab of visibleTabs(); track tab.id) {
+        <button
+          (click)="activeTab.set(tab.id)"
+          [class]="'whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm transition-colors ' + (activeTab() === tab.id ? 'border-primary text-primary neon-glow' : 'border-transparent text-muted-foreground hover:text-foreground hover:border-border')">
+          {{ tab.name }}
+        </button>
+      }
+    </nav>
+  </div>
+
+  <div class="min-h-[200px] pt-4">
+    @switch (activeTab()) {
+      @case ('color') {
+        <div class="grid grid-cols-3 gap-2">
+          <button (click)="addStepToSequence('red')" class="p-4 rounded-md bg-red-600 text-white font-bold">Vermelho</button>
+          <button (click)="addStepToSequence('black')" class="p-4 rounded-md bg-black text-white font-bold">Preto</button>
+          <button (click)="addStepToSequence('green')" class="p-4 rounded-md bg-green-600 text-white font-bold">Verde</button>
+        </div>
+      }
+      @case ('parity') {
+        <div class="grid grid-cols-2 gap-2">
+          <button (click)="addStepToSequence('even')" class="p-4 rounded-md bg-secondary text-secondary-foreground font-bold">Par</button>
+          <button (click)="addStepToSequence('odd')" class="p-4 rounded-md bg-secondary text-secondary-foreground font-bold">Ímpar</button>
+        </div>
+      }
+      @case ('range') {
+        <div class="grid grid-cols-2 gap-2">
+          <button (click)="addStepToSequence('low')" class="p-4 rounded-md bg-secondary text-secondary-foreground font-bold">Baixo (1-18)</button>
+          <button (click)="addStepToSequence('high')" class="p-4 rounded-md bg-secondary text-secondary-foreground font-bold">Alto (19-36)</button>
+        </div>
+      }
+      @case ('dozen') {
+        <div class="grid grid-cols-3 gap-2">
+          <button (click)="addStepToSequence('first')" class="p-4 rounded-md bg-secondary text-secondary-foreground font-bold">1ª</button>
+          <button (click)="addStepToSequence('second')" class="p-4 rounded-md bg-secondary text-secondary-foreground font-bold">2ª</button>
+          <button (click)="addStepToSequence('third')" class="p-4 rounded-md bg-secondary text-secondary-foreground font-bold">3ª</button>
+        </div>
+      }
+      @case ('column') {
+         <div class="grid grid-cols-3 gap-2">
+          <button (click)="addStepToSequence('first')" class="p-4 rounded-md bg-secondary text-secondary-foreground font-bold">1ª</button>
+          <button (click)="addStepToSequence('second')" class="p-4 rounded-md bg-secondary text-secondary-foreground font-bold">2ª</button>
+          <button (click)="addStepToSequence('third')" class="p-4 rounded-md bg-secondary text-secondary-foreground font-bold">3ª</button>
+        </div>
+      }
+      @case ('single_number') {
+        <div class="grid grid-cols-6 gap-1">
+          @for (num of allNumbers; track num) {
+            <button (click)="addStepToSequence(num)" class="h-10 w-10 flex items-center justify-center rounded bg-secondary hover:bg-muted font-mono">{{ num }}</button>
+          }
+        </div>
+      }
+      @case ('number_set') {
+        <div class="space-y-4">
+          <div>
+             <p class="text-sm font-medium mb-2">Selecione os números:</p>
+             <div class="grid grid-cols-7 gap-1">
+                @for (num of allNumbers; track num) {
+                    <button (click)="toggleNumberSelection(num)" 
+                            [class]="'h-9 w-9 text-xs flex items-center justify-center rounded font-mono border ' + (selectedNumbers().includes(num) ? 'bg-primary text-primary-foreground border-primary' : 'bg-input hover:bg-accent border-transparent')">
+                        {{ num }}
+                    </button>
+                }
+             </div>
+          </div>
+          <div>
+            <label for="set-neighbors" class="text-sm font-medium">Incluir vizinhos: {{ setNeighborCount() }}</label>
+            <input type="range" id="set-neighbors" min="0" max="5" [ngModel]="setNeighborCount()" (ngModelChange)="setNeighborCount.set(+$event)" class="w-full h-2 bg-muted rounded-lg appearance-none cursor-pointer accent-primary">
+          </div>
+          <div>
+            <p class="text-sm font-medium mb-2">Conjunto Final ({{ calculateNumberSet().length }} números):</p>
+            @if (calculateNumberSet().length > 0) {
+              <p class="text-sm text-muted-foreground break-all">{{ calculateNumberSet().join(', ') }}</p>
+            } @else {
+              <p class="text-sm text-muted-foreground">Selecione números para ver o conjunto final.</p>
+            }
+          </div>
+          <button (click)="addStepToSequence(null)" [disabled]="calculateNumberSet().length === 0" class="w-full bg-primary/80 text-primary-foreground font-bold p-2 rounded-md disabled:opacity-50 hover:bg-primary">Adicionar Conjunto à Sequência</button>
+        </div>
+      }
+      @case ('neighbors') {
+        <div class="space-y-4">
+          <div>
+             <label for="neighbor-center" class="text-sm font-medium">Número Central</label>
+             <input type="number" id="neighbor-center" min="0" max="36" [ngModel]="neighborCenter()" (ngModelChange)="neighborCenter.set(+$event)" class="w-full bg-input border-transparent rounded-md px-3 py-2 text-sm focus:ring-1 focus:ring-ring focus:outline-none">
+          </div>
+          <div>
+            <label for="neighbor-count" class="text-sm font-medium">Qtd. de Vizinhos (cada lado): {{ neighborCount() }}</label>
+            <input type="range" id="neighbor-count" min="1" max="5" [ngModel]="neighborCount()" (ngModelChange)="neighborCount.set(+$event)" class="w-full h-2 bg-muted rounded-lg appearance-none cursor-pointer accent-primary">
+          </div>
+           <button (click)="addStepToSequence(null)" class="w-full bg-primary/80 text-primary-foreground font-bold p-2 rounded-md disabled:opacity-50 hover:bg-primary">Adicionar Vizinhos à Sequência</button>
+        </div>
+      }
+      @case ('target_numbers') {
+        <div class="space-y-4">
+          <div class="flex justify-center bg-secondary/50 p-1 rounded-md">
+             <button (click)="targetMode.set('base')" [class]="'w-1/2 py-1 text-sm font-semibold rounded ' + (targetMode() === 'base' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground')">Base ({{ baseNumbers().length }})</button>
+             <button (click)="targetMode.set('targets')" [class]="'w-1/2 py-1 text-sm font-semibold rounded ' + (targetMode() === 'targets' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground')">Alvos ({{ targetNumbers().length }})</button>
+          </div>
+          <div class="flex items-center justify-between gap-4 p-2 bg-secondary/50 rounded-md">
+            <label for="target-neighbors-toggle" class="flex items-center gap-2 text-sm font-medium cursor-pointer">
+              <input type="checkbox" id="target-neighbors-toggle" [ngModel]="targetUseNeighbors()" (ngModelChange)="targetUseNeighbors.set($event)" class="h-4 w-4 rounded accent-primary bg-input border-border focus:ring-ring">
+              <span>Incluir Vizinhos</span>
+            </label>
+            @if(targetUseNeighbors()) {
+                <div class="flex items-center gap-2">
+                    <label for="target-neighbor-count" class="text-sm">Qtd: {{ targetNeighborCount() }}</label>
+                    <input type="range" id="target-neighbor-count" min="1" max="5" [ngModel]="targetNeighborCount()" (ngModelChange)="targetNeighborCount.set(+$event)" class="w-24 h-2 bg-muted rounded-lg appearance-none cursor-pointer accent-primary">
+                </div>
+            }
+          </div>
+           <p class="text-sm font-medium">Selecione os números de <span class="font-bold text-primary">{{ targetMode() === 'base' ? 'Base' : 'Alvo' }}</span>:</p>
+           <div class="grid grid-cols-7 gap-1">
+              @for (num of allNumbers; track num) {
+                  @let isSelected = (targetMode() === 'base' ? baseNumbers() : targetNumbers()).includes(num);
+                  <button (click)="toggleTargetNumber(num)" 
+                          [class]="'h-9 w-9 text-xs flex items-center justify-center rounded font-mono border ' + (isSelected ? 'bg-primary text-primary-foreground border-primary' : 'bg-input hover:bg-accent border-transparent')">
+                      {{ num }}
+                  </button>
+              }
+           </div>
+           <button (click)="addStepToSequence(null)" [disabled]="baseNumbers().length === 0 || targetNumbers().length === 0" class="w-full bg-primary/80 text-primary-foreground font-bold p-2 rounded-md disabled:opacity-50 hover:bg-primary">Adicionar Alvo à Sequência</button>
+        </div>
+      }
+      @case('cyclical') {
+        <div class="space-y-4">
+          <p class="text-xs text-muted-foreground -mt-2">Esta estratégia testa se um alvo se repete após um intervalo fixo de rodadas. Ela deve ser o único passo na sequência.</p>
+          
+          <!-- Target Definition -->
+          <div class="p-3 bg-secondary/30 rounded-md space-y-3">
+              <h4 class="text-sm font-medium">
+                  Alvo da Análise: 
+                  <span class="font-bold text-primary">{{ cyclicalTarget() ? getStrategyValueLabel(cyclicalTarget()!) : 'Nenhum' }}</span>
+              </h4>
+              <select [ngModel]="cyclicalTargetType()" (ngModelChange)="cyclicalTargetType.set($event); cyclicalTarget.set(null)" class="w-full bg-input border-transparent rounded-md px-3 py-2 text-sm focus:ring-1 focus:ring-ring focus:outline-none">
+                  <option value="color">Cor</option>
+                  <option value="parity">Paridade</option>
+                  <option value="range">Metade</option>
+                  <option value="dozen">Dúzia</option>
+                  <option value="column">Coluna</option>
+                  <option value="single_number">Número Único</option>
+              </select>
+
+              @switch(cyclicalTargetType()) {
+                  @case('color') { <div class="grid grid-cols-3 gap-2"><button (click)="setCyclicalTarget('red')" class="p-2 text-xs rounded-md bg-red-600 text-white font-bold">Vermelho</button><button (click)="setCyclicalTarget('black')" class="p-2 text-xs rounded-md bg-black text-white font-bold">Preto</button><button (click)="setCyclicalTarget('green')" class="p-2 text-xs rounded-md bg-green-600 text-white font-bold">Verde</button></div> }
+                  @case('parity') { <div class="grid grid-cols-2 gap-2"><button (click)="setCyclicalTarget('even')" class="p-2 text-xs rounded-md bg-muted text-muted-foreground font-bold">Par</button><button (click)="setCyclicalTarget('odd')" class="p-2 text-xs rounded-md bg-muted text-muted-foreground font-bold">Ímpar</button></div> }
+                  @case('range') { <div class="grid grid-cols-2 gap-2"><button (click)="setCyclicalTarget('low')" class="p-2 text-xs rounded-md bg-muted text-muted-foreground font-bold">1-18</button><button (click)="setCyclicalTarget('high')" class="p-2 text-xs rounded-md bg-muted text-muted-foreground font-bold">19-36</button></div> }
+                  @case('dozen') { <div class="grid grid-cols-3 gap-2"><button (click)="setCyclicalTarget('first')" class="p-2 text-xs rounded-md bg-muted text-muted-foreground font-bold">1ª</button><button (click)="setCyclicalTarget('second')" class="p-2 text-xs rounded-md bg-muted text-muted-foreground font-bold">2ª</button><button (click)="setCyclicalTarget('third')" class="p-2 text-xs rounded-md bg-muted text-muted-foreground font-bold">3ª</button></div> }
+                  @case('column') { <div class="grid grid-cols-3 gap-2"><button (click)="setCyclicalTarget('first')" class="p-2 text-xs rounded-md bg-muted text-muted-foreground font-bold">1ª</button><button (click)="setCyclicalTarget('second')" class="p-2 text-xs rounded-md bg-muted text-muted-foreground font-bold">2ª</button><button (click)="setCyclicalTarget('third')" class="p-2 text-xs rounded-md bg-muted text-muted-foreground font-bold">3ª</button></div> }
+                  @case('single_number') { 
+                    <div class="flex gap-2">
+                      <input type="number" min="0" max="36" [ngModel]="cyclicalSingleNumber()" (ngModelChange)="cyclicalSingleNumber.set(+$event)" class="flex-1 w-full bg-input border-transparent rounded-md px-3 py-2 text-sm focus:ring-1 focus:ring-ring focus:outline-none">
+                      <button (click)="setCyclicalTarget(null)" class="bg-muted text-muted-foreground px-4 py-2 rounded-md hover:bg-muted/80 text-sm font-semibold">Definir Número</button>
+                    </div>
+                  }
+              }
+          </div>
+
+          <!-- Interval Config -->
+          <div class="p-3 bg-secondary/30 rounded-md space-y-3">
+            <h4 class="text-sm font-medium">Configurar Repetição</h4>
+            <div>
+                <label for="delay-interval" class="block text-xs font-medium text-muted-foreground mb-1">Repetir após (rodadas)</label>
+                <input id="delay-interval" type="number" min="1" max="50" [ngModel]="cyclicalInterval()" (ngModelChange)="cyclicalInterval.set(+$event)" class="w-full bg-input border-transparent rounded-md px-3 py-2 text-sm focus:ring-1 focus:ring-ring focus:outline-none">
+            </div>
+             <div class="flex items-center justify-between pt-2 border-t border-border/50">
+              <label for="ignore-subsequent-toggle" class="font-medium text-sm text-foreground">
+                Ignorar gatilhos subsequentes
+                <p class="text-xs text-muted-foreground">Se ativado, apenas o primeiro alvo inicia a contagem.</p>
+              </label>
+              <div class="relative">
+                  <input type="checkbox" id="ignore-subsequent-toggle" class="sr-only peer" [ngModel]="cyclicalIgnoreSubsequent()" (ngModelChange)="cyclicalIgnoreSubsequent.set($event)">
+                  <div class="w-11 h-6 bg-input rounded-full peer peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-ring peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+              </div>
+            </div>
+          </div>
+          <button (click)="addStepToSequence(null)" [disabled]="!cyclicalTarget()" class="w-full bg-primary/80 text-primary-foreground font-bold p-2 rounded-md disabled:opacity-50 hover:bg-primary">Adicionar Passo Cíclico à Sequência</button>
+        </div>
+      }
+    }
+  </div>
+  
+  <div class="mt-6 pt-4 border-t border-border/50 space-y-2">
+     <div class="flex gap-2">
+        <button (click)="saveStrategy()" [disabled]="sequence().length === 0" class="flex-1 bg-primary text-primary-foreground font-bold p-3 rounded-md disabled:opacity-50 hover:bg-primary/90 neon-glow">
+            {{ isEditing() ? 'Atualizar' : 'Criar' }}
+        </button>
+        <button (click)="runBacktest()" [disabled]="sequence().length === 0" title="Testar sequência com dados existentes" class="bg-secondary text-secondary-foreground font-semibold p-3 rounded-md disabled:opacity-50 hover:bg-secondary/80">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+        </button>
+     </div>
+     @if(isEditing()) {
+        <button (click)="cancelEdit()" class="w-full bg-secondary text-secondary-foreground font-semibold p-2 rounded-md hover:bg-secondary/80">
+            Cancelar Edição
+        </button>
+     }
+  </div>
+</div>

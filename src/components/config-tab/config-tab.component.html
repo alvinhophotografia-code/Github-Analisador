@@ -1,0 +1,341 @@
+<div class="space-y-6">
+  <!-- Appearance Section -->
+  <div class="glass-card">
+    <div class="flex justify-between items-center p-4 sm:p-6 border-b border-border/50">
+      <h2 class="text-xl font-semibold text-primary">Aparência</h2>
+      <button (click)="toggleAppearanceMinimized()" class="p-1 text-muted-foreground hover:text-foreground">
+        @if(!isAppearanceMinimized()) {
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m18 15-6-6-6 6" />
+        </svg>
+        } @else {
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m6 9 6 6 6-6" />
+        </svg>
+        }
+      </button>
+    </div>
+    @if(!isAppearanceMinimized()) {
+    <div class="p-4 sm:p-6 animate-slide-in space-y-4">
+      <div class="flex items-center justify-between">
+        <label for="dark-mode-toggle" class="font-medium text-sm text-foreground">
+          Modo Escuro
+          <p class="text-xs text-muted-foreground">Alterne entre o tema claro e escuro.</p>
+        </label>
+        <div class="relative">
+            <input type="checkbox" id="dark-mode-toggle" class="sr-only peer" [ngModel]="darkModeEnabled()" (ngModelChange)="setDarkMode($event)">
+            <div class="w-11 h-6 bg-input rounded-full peer peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-ring peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between pt-4 border-t border-border/50">
+        <label for="theme-color-picker" class="font-medium text-sm text-foreground">
+            Cor Principal
+            <p class="text-xs text-muted-foreground">Escolha a cor de destaque do app.</p>
+        </label>
+        <div class="flex items-center gap-2">
+            <input 
+                type="color" 
+                id="theme-color-picker"
+                class="w-10 h-10 p-1 bg-input border-none rounded-md cursor-pointer"
+                [value]="colorPickerValue()"
+                (input)="setCustomTheme($event)">
+            <button (click)="resetTheme()" title="Resetar para a cor padrão" class="bg-secondary text-secondary-foreground p-2 rounded-md hover:bg-secondary/80">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5"><path d="M3 2v6h6"/><path d="M21 12A9 9 0 0 0 6 5.3L3 8"/><path d="M21 22v-6h-6"/><path d="M3 12a9 9 0 0 0 15 6.7l3-2.7"/></svg>
+            </button>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between pt-4 border-t border-border/50">
+        <label for="bg-color-picker" class="font-medium text-sm text-foreground">
+            Cor de Fundo
+            <p class="text-xs text-muted-foreground">Substitui o gradiente por uma cor sólida.</p>
+        </label>
+        <div class="flex items-center gap-2">
+            <input 
+                type="color" 
+                id="bg-color-picker"
+                class="w-10 h-10 p-1 bg-input border-none rounded-md cursor-pointer"
+                [value]="bgColorPickerValue()"
+                (input)="setCustomBackground($event)">
+            <button (click)="resetBackground()" title="Resetar para o fundo padrão" class="bg-secondary text-secondary-foreground p-2 rounded-md hover:bg-secondary/80">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5"><path d="M3 2v6h6"/><path d="M21 12A9 9 0 0 0 6 5.3L3 8"/><path d="M21 22v-6h-6"/><path d="M3 12a9 9 0 0 0 15 6.7l3-2.7"/></svg>
+            </button>
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+
+  <!-- Interface Customization -->
+  <div class="glass-card">
+    <div class="flex justify-between items-center p-4 sm:p-6 border-b border-border/50">
+      <h2 class="text-xl font-semibold text-primary">Personalização da Interface</h2>
+      <button (click)="toggleInterfaceMinimized()" class="p-1 text-muted-foreground hover:text-foreground">
+        @if(!isInterfaceMinimized()) {
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m18 15-6-6-6 6" />
+        </svg>
+        } @else {
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m6 9 6 6 6-6" />
+        </svg>
+        }
+      </button>
+    </div>
+    @if(!isInterfaceMinimized()) {
+      <div class="p-4 sm:p-6 animate-slide-in space-y-6">
+        <p class="text-sm text-muted-foreground -mt-2">Selecione quais cards de informação você deseja exibir em cada aba e reordene-os como preferir.</p>
+        
+        <!-- Entrada -->
+        <div>
+            <h3 class="text-base font-semibold text-primary/90 mb-3 border-b border-border/50 pb-2">Aba de Entrada</h3>
+            <div class="space-y-4">
+            @for(card of inputCards(); track card.key; let i = $index, first = $first, last = $last) {
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                   <div class="flex flex-col">
+                      <button (click)="moveUp('input', card.key)" [disabled]="first" class="text-muted-foreground disabled:opacity-30 hover:text-foreground"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg></button>
+                      <button (click)="moveDown('input', card.key)" [disabled]="last" class="text-muted-foreground disabled:opacity-30 hover:text-foreground"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+                  </div>
+                  <label [for]="card.key" class="font-medium text-sm text-foreground">{{ card.label }}</label>
+                </div>
+                <div class="relative">
+                  <input type="checkbox" [id]="card.key" class="sr-only peer" [ngModel]="isCardVisible(card.key)" (ngModelChange)="toggleCardVisibility(card.key, $event)">
+                  <div class="w-11 h-6 bg-input rounded-full peer peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-ring peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                </div>
+              </div>
+            }
+            </div>
+        </div>
+
+        <!-- Estratégias -->
+        <div>
+            <h3 class="text-base font-semibold text-primary/90 mb-3 border-b border-border/50 pb-2">Aba de Estratégias</h3>
+            <div class="space-y-4">
+            @for(card of strategiesCards(); track card.key; let i = $index, first = $first, last = $last) {
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                   <div class="flex flex-col">
+                      <button (click)="moveUp('strategies', card.key)" [disabled]="first" class="text-muted-foreground disabled:opacity-30 hover:text-foreground"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg></button>
+                      <button (click)="moveDown('strategies', card.key)" [disabled]="last" class="text-muted-foreground disabled:opacity-30 hover:text-foreground"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+                  </div>
+                  <label [for]="card.key" class="font-medium text-sm text-foreground">{{ card.label }}</label>
+                </div>
+                <div class="relative">
+                  <input type="checkbox" [id]="card.key" class="sr-only peer" [ngModel]="isCardVisible(card.key)" (ngModelChange)="toggleCardVisibility(card.key, $event)">
+                  <div class="w-11 h-6 bg-input rounded-full peer peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-ring peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                </div>
+              </div>
+            }
+            </div>
+        </div>
+        
+        <!-- Painel -->
+        <div>
+            <h3 class="text-base font-semibold text-primary/90 mb-3 border-b border-border/50 pb-2">Aba do Painel</h3>
+            <div class="space-y-4">
+            @for(card of dashboardCards(); track card.key; let i = $index, first = $first, last = $last) {
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                   <div class="flex flex-col">
+                      <button (click)="moveUp('dashboard', card.key)" [disabled]="first" class="text-muted-foreground disabled:opacity-30 hover:text-foreground"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg></button>
+                      <button (click)="moveDown('dashboard', card.key)" [disabled]="last" class="text-muted-foreground disabled:opacity-30 hover:text-foreground"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+                  </div>
+                  <label [for]="card.key" class="font-medium text-sm text-foreground">{{ card.label }}</label>
+                </div>
+                <div class="relative">
+                  <input type="checkbox" [id]="card.key" class="sr-only peer" [ngModel]="isCardVisible(card.key)" (ngModelChange)="toggleCardVisibility(card.key, $event)">
+                  <div class="w-11 h-6 bg-input rounded-full peer peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-ring peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                </div>
+              </div>
+            }
+            </div>
+        </div>
+
+        <!-- Análise -->
+        <div>
+            <h3 class="text-base font-semibold text-primary/90 mb-3 border-b border-border/50 pb-2">Aba de Análise</h3>
+            <div class="space-y-4">
+            @for(card of analysisCards(); track card.key; let i = $index, first = $first, last = $last) {
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                   <div class="flex flex-col">
+                      <button (click)="moveUp('analysis', card.key)" [disabled]="first" class="text-muted-foreground disabled:opacity-30 hover:text-foreground"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg></button>
+                      <button (click)="moveDown('analysis', card.key)" [disabled]="last" class="text-muted-foreground disabled:opacity-30 hover:text-foreground"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+                  </div>
+                  <label [for]="card.key" class="font-medium text-sm text-foreground">{{ card.label }}</label>
+                </div>
+                <div class="relative">
+                  <input type="checkbox" [id]="card.key" class="sr-only peer" [ngModel]="isCardVisible(card.key)" (ngModelChange)="toggleCardVisibility(card.key, $event)">
+                  <div class="w-11 h-6 bg-input rounded-full peer peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-ring peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                </div>
+              </div>
+            }
+            </div>
+        </div>
+
+      </div>
+    }
+  </div>
+
+  <!-- Advanced Settings -->
+  <div class="glass-card">
+    <div class="flex justify-between items-center p-4 sm:p-6 border-b border-border/50">
+      <h2 class="text-xl font-semibold text-primary">Configurações Avançadas</h2>
+      <button (click)="toggleAdvancedMinimized()" class="p-1 text-muted-foreground hover:text-foreground">
+        @if(!isAdvancedMinimized()) {
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6" /></svg>
+        } @else {
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+        }
+      </button>
+    </div>
+    @if(!isAdvancedMinimized()) {
+    <div class="p-4 sm:p-6 animate-slide-in space-y-4">
+      <div class="flex items-center justify-between">
+        <label class="font-medium text-sm text-foreground">
+          Tipo de Roleta
+          <p class="text-xs text-muted-foreground">Muda a mesa e as estatísticas.</p>
+        </label>
+        <div class="flex bg-input p-1 rounded-md">
+          <button (click)="setRouletteType('european')" [class]="'px-2 py-1 text-xs font-semibold rounded ' + (rouletteType() === 'european' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground')">Europeia (0)</button>
+          <button (click)="setRouletteType('american')" [class]="'px-2 py-1 text-xs font-semibold rounded ' + (rouletteType() === 'american' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground')">Americana (00)</button>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between pt-4 border-t border-border/50">
+        <label for="animations-toggle" class="font-medium text-sm text-foreground">
+          Ativar Animações na Interface
+          <p class="text-xs text-muted-foreground">Desative para uma experiência mais rápida.</p>
+        </label>
+        <div class="relative">
+            <input type="checkbox" id="animations-toggle" class="sr-only peer" [ngModel]="animationsEnabled()" (ngModelChange)="setAnimationsEnabled($event)">
+            <div class="w-11 h-6 bg-input rounded-full peer peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-ring peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+        </div>
+      </div>
+      <div class="flex items-center justify-between gap-4">
+        <label for="priority-threshold" class="font-medium text-sm text-foreground">
+          Gatilho de Prioridade
+          <p class="text-xs text-muted-foreground">Nº de derrotas seguidas para alertar.</p>
+        </label>
+        <input type="number" id="priority-threshold" min="1" max="10" class="w-20 bg-input border-transparent rounded-md px-3 py-2 text-sm focus:ring-1 focus:ring-ring focus:outline-none text-center" [ngModel]="priorityThreshold()" (input)="setPriorityThreshold($event)">
+      </div>
+    </div>
+    }
+  </div>
+
+  <!-- Tutorial Section -->
+  <div class="glass-card">
+    <div class="flex justify-between items-center p-4 sm:p-6 border-b border-border/50">
+      <h2 class="text-xl font-semibold text-primary">Como Usar o Aplicativo</h2>
+      <button (click)="toggleTutorialMinimized()" class="p-1 text-muted-foreground hover:text-foreground">
+        @if(!isTutorialMinimized()) {
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m18 15-6-6-6 6" />
+        </svg>
+        } @else {
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m6 9 6 6 6-6" />
+        </svg>
+        }
+      </button>
+    </div>
+    @if(!isTutorialMinimized()) {
+    <div class="p-4 sm:p-6 animate-slide-in space-y-6 prose prose-invert max-w-none prose-h3:text-primary prose-h4:text-primary/90 prose-strong:text-primary-foreground prose-a:text-primary">
+      
+       <div class="flex justify-start">
+         <button (click)="showTutorial()" class="bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90 font-semibold no-underline">
+          Rever Tutorial Rápido
+        </button>
+       </div>
+       
+      <section>
+        <h3>📌 Aba de Entrada</h3>
+        <p>Esta é a sua central de operações para registrar os resultados da roleta.</p>
+        <ul>
+          <li><strong>Adicionar Resultado:</strong> Você pode inserir números de duas formas: digitando um número de 0 a 36 no campo e clicando em "Adicionar", ou enviando uma imagem (print) do histórico de resultados da sua plataforma de roleta. A IA irá extrair os números da imagem e adicioná-los sequencialmente.</li>
+          <li><strong>Ações:</strong> Desfaça o último resultado ou limpe todo o histórico de jogadas.</li>
+          <li><strong>Estratégias Ativas:</strong> Veja em tempo real o status de todas as suas estratégias ativas. Você pode minimizá-las para ver um gráfico de tendência de acertos/erros.</li>
+          <li><strong>Correlações:</strong> Analise quais são os 3 números que mais saíram após o último resultado sorteado.</li>
+          <li><strong>Resultados Recentes:</strong> Acompanhe os últimos 20 números que foram adicionados.</li>
+        </ul>
+      </section>
+      
+      <section>
+        <h3>🎯 Aba de Estratégias</h3>
+        <p>Aqui você cria, gerencia e monitora suas estratégias de aposta.</p>
+        <ul>
+          <li><strong>Criador de Estratégias:</strong> Crie sequências complexas de apostas. Por exemplo, você pode criar uma estratégia que aposta no "Vermelho", depois no "Par", e depois na "1ª Dúzia". A IA também pode sugerir uma sequência com base em um comando de texto.</li>
+          <li><strong>Monitor de Estratégias:</strong> Acompanhe o desempenho de cada estratégia com estatísticas detalhadas como taxa de acerto, sequências de vitórias/derrotas e histórico. Você pode editar, ativar/desativar, resetar ou deletar qualquer estratégia.</li>
+          <li><strong>Gerenciamento do App:</strong> Exporte todos os seus dados (resultados e estratégias) para um arquivo ou importe um arquivo para restaurar seu estado. Cuidado com a opção de limpar todas as estratégias.</li>
+        </ul>
+        
+        <h4>Interpretando Acertos e Erros das Estratégias</h4>
+        <p>O sistema analisa cada número inserido e verifica se ele corresponde ao passo <strong>atual</strong> da sequência da sua estratégia.</p>
+        <ul>
+            <li><strong>Estratégias Simples (Cor, Paridade, Dúzia, etc.):</strong> Um acerto ocorre se o número sorteado corresponder à aposta do passo atual. Se acertar, o sistema avança para o próximo passo da sequência. Se errar, a contagem da sequência é reiniciada e o sistema volta a esperar pelo primeiro passo. Um ciclo completo de acertos (acertar todos os passos da sequência) conta como uma "vitória" (Hit). Um erro em qualquer passo conta como uma "derrota" (Loss).</li>
+            <li><strong>Estratégia de Alvo (Target Numbers):</strong> Esta é mais complexa e funciona em dois estágios:
+                <ol>
+                    <li><strong>Estágio 1 (Esperando a Base):</strong> A estratégia fica inativa, apenas observando os números. Ela só é "ativada" quando um dos seus números de "Base" é sorteado.</li>
+                    <li><strong>Estágio 2 (Buscando o Alvo):</strong> Após um número de "Base" ser sorteado, a estratégia começa a analisar os números seguintes. Se um dos seus números "Alvo" for sorteado, isso conta como uma <strong>vitória (Hit)</strong>. Se qualquer outro número que não seja um "Alvo" for sorteado, isso conta como uma <strong>derrota (Loss)</strong>.</li>
+                    <li><strong>Reinício:</strong> Após um acerto ou erro, o ciclo reinicia. A estratégia volta a esperar por um novo número de "Base" para começar a busca por um alvo novamente.</li>
+                </ol>
+            </li>
+        </ul>
+      </section>
+
+      <section>
+        <h3>📊 Aba de Painel</h3>
+        <p>Tenha uma visão geral e consolidada de todas as suas estatísticas.</p>
+        <ul>
+          <li><strong>Estatísticas Gerais:</strong> Veja um resumo completo de todas as jogadas, incluindo a contagem e porcentagem de vermelhos, pretos, zeros, pares e ímpares.</li>
+          <li><strong>Resumo das Estratégias:</strong> Uma tabela comparativa com o desempenho de todas as suas estratégias, ideal para identificar rapidamente quais estão funcionando melhor.</li>
+          <li><strong>Análise de Atrasos:</strong> Monitore quais Dúzias, Colunas e Metades estão "atrasadas", ou seja, há quantas rodadas não saem.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h3>📈 Aba de Análise</h3>
+        <p>Mergulhe fundo nos dados com ferramentas visuais e análises detalhadas.</p>
+        <ul>
+          <li><strong>Visão da Roleta:</strong> Alterne entre uma grade de números (estilo mesa de apostas) e uma roda de roleta visual para ver o último número sorteado.</li>
+          <li><strong>Números Quentes & Frios:</strong> Identifique os 5 números que mais e menos saíram no seu histórico.</li>
+          <li><strong>Correlação de Números:</strong> Selecione um número e veja quais são os 5 números que mais saíram logo em seguida.</li>
+          <li><strong>Distribuição de Números:</strong> Um gráfico de barras que mostra a frequência de cada número.</li>
+          <li><strong>Tendências:</strong> Um gráfico de linhas que mostra a evolução das porcentagens de Cores e Paridade ao longo do tempo.</li>
+        </ul>
+      </section>
+
+    </div>
+    }
+  </div>
+
+  <!-- Danger Zone -->
+  <div class="glass-card">
+    <div class="flex justify-between items-center p-4 sm:p-6 border-b border-destructive/50">
+      <h2 class="text-xl font-semibold text-destructive">Zona de Perigo</h2>
+      <button (click)="toggleDangerZoneMinimized()" class="p-1 text-muted-foreground hover:text-foreground">
+        @if(!isDangerZoneMinimized()) {
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6" /></svg>
+        } @else {
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+        }
+      </button>
+    </div>
+    @if(!isDangerZoneMinimized()) {
+    <div class="p-4 sm:p-6 animate-slide-in space-y-4">
+      <p class="text-sm text-muted-foreground">Esta ação é <strong>irreversível</strong> e irá apagar todos os resultados, estratégias e configurações do aplicativo no seu navegador.</p>
+      <div class="space-y-2">
+        <label for="reset-confirm" class="font-medium text-sm">Para confirmar, digite <span class="font-bold text-destructive">RESETAR</span> abaixo:</label>
+        <input id="reset-confirm" type="text" class="w-full bg-input border-transparent rounded-md px-3 py-2 text-sm focus:ring-1 focus:ring-ring focus:outline-none placeholder:text-muted-foreground/50" placeholder="RESETAR" [ngModel]="resetConfirmation()" (ngModelChange)="resetConfirmation.set($event)">
+      </div>
+      <button (click)="resetApplication()" [disabled]="resetConfirmation() !== 'RESETAR'" class="w-full bg-destructive text-destructive-foreground font-semibold p-2 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-destructive/90 flex items-center justify-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg>
+        <span>Resetar Aplicação Permanentemente</span>
+      </button>
+    </div>
+    }
+  </div>
+
+</div>

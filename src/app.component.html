@@ -1,0 +1,82 @@
+
+<app-toast-container></app-toast-container>
+@if(showOnboarding()) {
+  <app-onboarding-tutorial />
+}
+<div class="min-h-screen p-3 sm:p-6 lg:p-8 pb-24">
+  <div class="max-w-7xl mx-auto">
+    <header class="mb-6 text-center lg:text-left">
+      <h1 class="text-2xl sm:text-3xl font-bold text-primary neon-glow">Analisador de Estratégias de Roleta</h1>
+    </header>
+
+    <main>
+      @switch (activeTab()) {
+        @case ('input') {
+          <div class="animate-slide-in">
+            <app-input-tab />
+          </div>
+        }
+        @case ('strategies') {
+          <div class="animate-slide-in">
+            <app-strategies-tab />
+          </div>
+        }
+        @case ('dashboard') {
+          <div class="animate-slide-in">
+            <app-dashboard-tab />
+          </div>
+        }
+        @case ('analysis') {
+          <div class="animate-slide-in">
+            <app-analysis-tab />
+          </div>
+        }
+        @case ('backtest') {
+          <div class="animate-slide-in">
+            <app-backtest-tab />
+          </div>
+        }
+        @case ('config') {
+          <div class="animate-slide-in">
+            <app-config-tab />
+          </div>
+        }
+      }
+    </main>
+  </div>
+</div>
+
+<footer class="fixed bottom-0 left-0 right-0 h-20 glass-card border-t border-border/50 rounded-none z-40">
+  <nav class="h-full max-w-7xl mx-auto flex justify-around items-center px-2">
+    @for (tab of tabs; track tab.id) {
+      <button
+        (click)="selectTab(tab.id)"
+        class="flex flex-col items-center justify-center gap-1 w-20 h-16 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-ring"
+        [class]="activeTab() === tab.id ? 'text-primary' : 'text-muted-foreground hover:text-foreground'">
+        
+        @switch(tab.id) {
+          @case('input') {
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+          }
+          @case('strategies') {
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6"><path d="M5 10v4c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2v-4"></path><path d="M5 14.2V6.8a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v7.4"></path><path d="M12 18v4"></path><path d="M10 22h4"></path></svg>
+          }
+          @case('dashboard') {
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6"><rect width="7" height="9" x="3" y="3" rx="1"></rect><rect width="7" height="5" x="14" y="3" rx="1"></rect><rect width="7" height="9" x="14" y="12" rx="1"></rect><rect width="7" height="5" x="3" y="16" rx="1"></rect></svg>
+          }
+          @case('analysis') {
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6"><path d="M3 3v18h18"></path><path d="M18.7 8a2.3 2.3 0 0 0-3.4 0l-4.6 4.6a2.3 2.3 0 0 0 0 3.4l2.6 2.6a2.3 2.3 0 0 0 3.4 0l4.6-4.6a2.3 2.3 0 0 0 0-3.4Z"></path></svg>
+          }
+          @case('backtest') {
+             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>
+          }
+          @case('config') {
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 0 2l-.15.08a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1 0-2l.15.08a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+          }
+        }
+        
+        <span class="text-xs font-medium">{{ tab.name }}</span>
+      </button>
+    }
+  </nav>
+</footer>

@@ -1,0 +1,48 @@
+<div class="glass-card p-4">
+  <div class="flex justify-between items-center mb-3">
+    @if (lastNumber() !== undefined) {
+      <h3 class="text-lg font-semibold text-primary">Correlações (Após Nº {{ lastNumber() }})</h3>
+    } @else {
+      <h3 class="text-lg font-semibold text-primary">Correlações</h3>
+    }
+    <button (click)="toggleMinimized()" class="p-1 text-muted-foreground hover:text-foreground">
+      @if(!isMinimized()) {
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+      } @else {
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+      }
+    </button>
+  </div>
+  
+  @if(!isMinimized()) {
+    <div class="animate-slide-in min-h-[80px]">
+      @let corrs = correlations();
+      @if (lastNumber() !== undefined && corrs.length > 0) {
+        <div class="space-y-2">
+          @for(corr of corrs; track corr.number) {
+            <div class="flex items-center gap-2 text-sm">
+              <div [class]="'h-6 w-6 flex-shrink-0 flex items-center justify-center rounded-full text-xs font-bold text-white ' + numberColorClass(corr.number)">
+                {{ corr.number }}
+              </div>
+              <div class="w-full bg-secondary/50 rounded-full h-4">
+                <div class="bg-primary h-4 rounded-full text-right" [style.width]="corr.percentage + '%'">
+                </div>
+              </div>
+              <div class="font-mono text-xs w-24 text-right">
+                {{ corr.count }}x ({{ corr.percentage.toFixed(1) }}%)
+              </div>
+            </div>
+          }
+        </div>
+      } @else {
+        <p class="text-muted-foreground text-sm text-center py-4">
+            @if (rouletteService.results().length < 2) {
+                <span>Adicione mais números para ver as correlações.</span>
+            } @else {
+                 <span>Sem dados de correlação para o último número.</span>
+            }
+        </p>
+      }
+    </div>
+  }
+</div>
